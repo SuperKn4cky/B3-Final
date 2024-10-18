@@ -1,7 +1,6 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { fromError } from "zod-validation-error";
-import { z } from "zod";
 
 export let db: ReturnType<typeof drizzle>;
 
@@ -29,12 +28,11 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 
 async function startDatabase() {
   try {
-    validateEnv();
-    db = drizzle({ connection: { uri: process.env.DATABASE_URL! } });
+    db = drizzle({ connection: { uri: process.env.DATABASE_URL } });
     await db.execute("select 1");
     console.log("connected to db");
   } catch (error) {
-    throw error;
+    console.error("Erreur lors de la connexion à la base de données :", error);
   }
 }
 
@@ -46,19 +44,10 @@ app.use(express.json());
 app.use(errorHandler);
 
 async function startServer() {
-  try {
-    await startDatabase();
-    
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`Erreur lors de la connexion à la base de données : ${error.message}`);
-    } else {
-      console.error("Erreur inconnue lors de la connexion à la base de données.");
-    }
-  }
+  await startDatabase();
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
 }
 
 startServer();
