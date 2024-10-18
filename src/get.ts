@@ -7,7 +7,7 @@ app.get("/users", async (req, res) => {
         const validatedUsers = allUsers.map((user) => {
             return selectUserSchema.parse(user);
         });
-        res.status(200).json(allUsers);
+        res.status(200).json(validatedUsers);
     } catch (error) {
         console.error(
             "Erreur lors de la récupération des utilisateurs :",
