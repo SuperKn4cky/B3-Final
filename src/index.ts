@@ -12,6 +12,8 @@ async function startDatabase() {
   }
 }
 
+startDatabase();
+
 const app = express();
 const port = 3000;
 
