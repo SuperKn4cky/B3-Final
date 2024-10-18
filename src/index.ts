@@ -1,3 +1,4 @@
+import { drizzle } from "drizzle-orm/connect";
 import express from "express";
 
 const app = express();
@@ -8,3 +9,5 @@ app.use(express.json());
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+const db = await drizzle("mysql2", process.env.DATABASE_URL);
