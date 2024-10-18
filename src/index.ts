@@ -4,7 +4,11 @@ import { fromError } from "zod-validation-error";
 import { z } from "zod";
 import 'dotenv/config';
 
-export let db: ReturnType<typeof drizzle>;
+const app = express();
+const port = 3000;
+app.use(express.json());
+
+let db: ReturnType<typeof drizzle>;
 
 const envSchema = z.object({
   DATABASE_URL: z.string().url().min(1, "Missing env file or incorrect format: 'DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<database>'"),
@@ -28,6 +32,8 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   });
 };
 
+app.use(errorHandler);
+
 async function startDatabase() {
   try {
     validateEnv();
@@ -41,17 +47,13 @@ async function startDatabase() {
   }
 }
 
-export const app = express();
-const port = 3000;
-
-app.use(express.json());
-
-app.use(errorHandler);
+export { db, app };
 
 async function startServer() {
   try {
     await startDatabase();
     
+    await import ('./get.js');
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
     });
