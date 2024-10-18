@@ -1,6 +1,5 @@
-import { Express } from "express";
 import { db, app } from "./index.js";
-import { users } from "./db/schema/users";
+import { users } from "./db/schema/users.js";
 
 app.get("/users", async (req, res) => {
   try {
