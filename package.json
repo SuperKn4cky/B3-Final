@@ -26,6 +26,7 @@
     "dependencies": {
         "concurrently": "^9.0.1",
         "connect": "^3.7.0",
+        "dotenv": "^16.4.5",
         "drizzle-orm": "^0.35.2",
         "drizzle-zod": "^0.5.1",
         "express": "^4.21.1",

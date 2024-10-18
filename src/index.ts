@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 import express, { Request, Response, NextFunction } from "express";
 import { fromError } from "zod-validation-error";
 import { z } from "zod";
+import 'dotenv/config';
 
 export let db: ReturnType<typeof drizzle>;
 
@@ -30,10 +31,12 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 async function startDatabase() {
   try {
     validateEnv();
+    console.log("Database URL:", process.env.DATABASE_URL);
     db = drizzle({ connection: { uri: process.env.DATABASE_URL! } });
     await db.execute("select 1");
     console.log("connected to db");
   } catch (error) {
+    console.error("Error connecting to database", error);
     throw error;
   }
 }
