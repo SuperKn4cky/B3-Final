@@ -1,9 +1,9 @@
 import { db, app } from "./index.js";
-import { users, selectUserSchema } from "./db/schema/users.js";
+import { users, insertUserSchema } from "./db/schema/users.js";
 
 app.post("/users", async (req, res) => {
     try {
-        const validatedInsert = selectUserSchema.parse(req.body);
+        const validatedInsert = insertUserSchema.parse(req.body);
         await db.insert(users).values(validatedInsert).execute();
         res.status(201).json({
             message: "Utilisateur inséré avec succès",

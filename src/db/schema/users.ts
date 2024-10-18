@@ -9,6 +9,7 @@ export const users = mysqlTable("users", {
 });
 
 export const insertUserSchema = createInsertSchema(users, {
+  name: (schema) => schema.name.min(3).max(255),
   email: (schema) => schema.email.email(),
 });
 
