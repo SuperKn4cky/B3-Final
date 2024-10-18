@@ -2,9 +2,11 @@ import { drizzle } from "drizzle-orm/mysql2";
 import express from "express";
 import { users } from "./db/schema/users";
 
+export let db: ReturnType<typeof drizzle>;
+
 async function startDatabase() {
   try {
-    const db = drizzle({ connection: { uri: process.env.DATABASE_URL } });
+    db = drizzle({ connection: { uri: process.env.DATABASE_URL } });
     const response = await db.select().from(users);
     console.log(response);
   } catch (error) {
@@ -14,7 +16,7 @@ async function startDatabase() {
 
 startDatabase();
 
-const app = express();
+export const app = express();
 const port = 3000;
 
 app.use(express.json());
