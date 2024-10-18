@@ -1,14 +1,12 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import express from "express";
-import { users } from "./db/schema/users";
 
 export let db: ReturnType<typeof drizzle>;
 
 async function startDatabase() {
   try {
     db = drizzle({ connection: { uri: process.env.DATABASE_URL } });
-    const response = await db.select().from(users);
-    console.log(response);
+    console.log("connected to db");
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);
   }
@@ -21,6 +19,11 @@ const port = 3000;
 
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+async function startServer() {
+  await startDatabase();
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}
+
+startServer();
