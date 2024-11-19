@@ -19,8 +19,8 @@
         "start": "node dist/src/",
         "all": "yarn c && yarn start",
         "static": "yarn eslint src",
-        "stylecheck": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json}'",
-        "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json}'",
+        "stylecheck": "prettier --check 'src/**/*.{js,jsx,ts,tsx,css,scss,json}'",
+        "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,scss,json}'",
         "clear": "rm -rf dist",
         "auto": "concurrently \"yarn tsc --watch\" \"nodemon dist/index.js\"",
         "dev": "nodemon --watch src --ext ts --exec 'yarn all'"
