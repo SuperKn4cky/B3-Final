@@ -14,9 +14,12 @@ app.post(
                 password: req.body.password,
                 email: req.body.email,
                 comment: xss(req.body.comment),
-            };
+                role: req.body.role,
+            }; 
             const validatedInsert = insertUserSchema.parse(sanitizedBody);
+            
             await db.insert(users).values(validatedInsert).execute();
+            
             res.status(201).json({
                 message: "Utilisateur inséré avec succès",
                 //csrfToken: req.csrfToken(),
