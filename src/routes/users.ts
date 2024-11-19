@@ -1,7 +1,11 @@
 import { db, app } from "../index.js";
 import { sql } from "drizzle-orm";
 import xss from "xss";
-import { users, selectUserSchema, insertUserSchema } from "../db/schema/users.js";
+import {
+    users,
+    selectUserSchema,
+    insertUserSchema,
+} from "../db/schema/users.js";
 //import csurf from "csurf";
 
 //const csrfProtection = csurf({ cookie: true });
@@ -14,12 +18,9 @@ app.get("/users", async (req, res) => {
         });
         res.status(200).json(validatedUsers);
     } catch (error) {
-        console.error(
-            "Erreur lors de la récupération des utilisateurs :",
-            error,
-        );
+        console.error("Error retrieving users:", error);
         res.status(500).json({
-            message: "Erreur lors de la récupération des utilisateurs.",
+            message: "Error retrieving users.",
             error,
         });
     }
@@ -34,7 +35,7 @@ app.get("/users/:id", async (req, res) => {
             .where(sql`${users.id} = ${id}`);
         if (User.length === 0) {
             res.status(404).json({
-                message: "Utilisateur non trouvé.",
+                message: "User not found.",
                 user: `id: ${id}`,
             });
         } else {
@@ -44,12 +45,9 @@ app.get("/users/:id", async (req, res) => {
             res.status(200).json(validatedUsers);
         }
     } catch (error) {
-        console.error(
-            "Erreur lors de la récupération de l'utilisateur :",
-            error,
-        );
+        console.error("Error retrieving user:", error);
         res.status(500).json({
-            message: "Erreur lors de la récupération de l'utilisateur.",
+            message: "Error retrieving user:",
             error,
         });
     }
@@ -65,19 +63,19 @@ app.post(
                 email: req.body.email,
                 comment: req.body.comment ? xss(req.body.comment) : null,
                 role: req.body.role,
-            }; 
+            };
             const validatedInsert = insertUserSchema.parse(sanitizedBody);
-            
+
             await db.insert(users).values(validatedInsert).execute();
-            
+
             res.status(201).json({
-                message: "Utilisateur inséré avec succès",
+                message: "User successfully created",
                 //csrfToken: req.csrfToken(),
             });
         } catch (error) {
-            console.error("Erreur lors de l'insertion de utilisateur :", error);
+            console.error("Error inserting user:", error);
             res.status(500).json({
-                message: "Erreur lors de l'insertion de utilisateur.",
+                message: "Error inserting user:",
                 error,
             });
         }
@@ -105,38 +103,37 @@ app.put("/users/:id", async (req, res) => {
             .execute();
 
         if (result.affectedRows === 0) {
-            res.status(404).json({ message: "Utilisateur non trouvé." });
+            res.status(404).json({ message: "User not found." });
         } else {
-            res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
+            res.status(200).json({ message: "User successfully updated." });
         }
     } catch (error) {
-        console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+        console.error("Error updating user:", error);
         res.status(500).json({
-            message: "Erreur lors de la mise à jour de l'utilisateur.",
+            message: "Error updating user:",
             error,
         });
     }
 });
-
 
 app.delete("/users/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
         const [result] = await db
-        .delete(users)
-        .where(sql`${users.id} = ${id}`)
-        .execute();
+            .delete(users)
+            .where(sql`${users.id} = ${id}`)
+            .execute();
 
         if (result.affectedRows === 0) {
-            res.status(404).json({ message: "Utilisateur non trouvé." });
+            res.status(404).json({ message: "User not found." });
         } else {
-            res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+            res.status(200).json({ message: "User successfully deleted." });
         }
     } catch (error) {
-        console.error("Erreur lors de la suppression de l'utilisateur :", error);
+        console.error("Error deleting user:", error);
         res.status(500).json({
-            message: "Erreur lors de la suppression de l'utilisateur.",
+            message: "Error deleting user:",
             error,
         });
     }
