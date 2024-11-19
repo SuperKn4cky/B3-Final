@@ -69,8 +69,7 @@ async function startServer() {
     try {
         await startDatabase();
 
-        await import("./get.js");
-        await import("./post.js");
+        await import("./routes/users.js");
         app.listen(port, "0.0.0.0", () => {
             console.log(`Server is running on http://localhost:${port}`);
         });

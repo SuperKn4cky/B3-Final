@@ -1,6 +1,10 @@
-import { db, app } from "./index.js";
+import { db, app } from "../index.js";
 import { sql } from "drizzle-orm";
-import { users, selectUserSchema } from "./db/schema/users.js";
+import xss from "xss";
+import { users, selectUserSchema, insertUserSchema } from "../db/schema/users.js";
+//import csurf from "csurf";
+
+//const csrfProtection = csurf({ cookie: true });
 
 app.get("/users", async (req, res) => {
     try {
@@ -50,3 +54,32 @@ app.get("/users/:id", async (req, res) => {
         });
     }
 });
+
+app.post(
+    "/users",
+    /*csrfProtection,*/ async (req, res) => {
+        try {
+            const sanitizedBody = {
+                name: req.body.name,
+                password: req.body.password,
+                email: req.body.email,
+                comment: xss(req.body.comment),
+                role: req.body.role,
+            }; 
+            const validatedInsert = insertUserSchema.parse(sanitizedBody);
+            
+            await db.insert(users).values(validatedInsert).execute();
+            
+            res.status(201).json({
+                message: "Utilisateur inséré avec succès",
+                //csrfToken: req.csrfToken(),
+            });
+        } catch (error) {
+            console.error("Erreur lors de l'insertion de utilisateur :", error);
+            res.status(500).json({
+                message: "Erreur lors de l'insertion de utilisateur.",
+                error,
+            });
+        }
+    },
+);
