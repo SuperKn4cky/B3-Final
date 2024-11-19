@@ -63,7 +63,7 @@ app.post(
                 name: req.body.name,
                 password: req.body.password,
                 email: req.body.email,
-                comment: xss(req.body.comment),
+                comment: req.body.comment ? xss(req.body.comment) : null,
                 role: req.body.role,
             }; 
             const validatedInsert = insertUserSchema.parse(sanitizedBody);
@@ -83,3 +83,61 @@ app.post(
         }
     },
 );
+
+app.put("/users/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const sanitizedBody = {
+            name: req.body.name,
+            password: req.body.password,
+            email: req.body.email,
+            comment: req.body.comment ? xss(req.body.comment) : null,
+            role: req.body.role,
+        };
+
+        const validatedUpdate = insertUserSchema.partial().parse(sanitizedBody);
+
+        const [result] = await db
+            .update(users)
+            .set(validatedUpdate)
+            .where(sql`${users.id} = ${id}`)
+            .execute();
+
+        if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Utilisateur non trouvé." });
+        } else {
+            res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
+        }
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+        res.status(500).json({
+            message: "Erreur lors de la mise à jour de l'utilisateur.",
+            error,
+        });
+    }
+});
+
+
+app.delete("/users/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const [result] = await db
+        .delete(users)
+        .where(sql`${users.id} = ${id}`)
+        .execute();
+
+        if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Utilisateur non trouvé." });
+        } else {
+            res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression de l'utilisateur :", error);
+        res.status(500).json({
+            message: "Erreur lors de la suppression de l'utilisateur.",
+            error,
+        });
+    }
+});
