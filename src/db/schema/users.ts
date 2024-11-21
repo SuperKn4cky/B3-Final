@@ -6,7 +6,7 @@ export const users = mysqlTable("users", {
     name: varchar("name", { length: 255 }).notNull(),
     password: varchar("password", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
-    comment: varchar("comment", { length: 255 }),
+    description: varchar("description", { length: 255 }),
     role: mysqlEnum("role", ["student", "teacher", "admin"]).notNull(),
 });
 
@@ -22,7 +22,7 @@ export const insertUserSchema = createInsertSchema(users, {
         .min(8, { message: "Password must have at least 8 characters." })
         .max(255)
         .regex(/^[a-zA-Z0-9]+$/, { message: "Password must contain only letters and numbers." }),
-    comment: (schema) => schema.comment.optional().nullable(),
+        description: (schema) => schema.description.optional().nullable(),
     role: (schema) => schema.role,
 });
 

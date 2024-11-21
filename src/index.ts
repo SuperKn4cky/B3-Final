@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, /*NextFunction*/ } from "express";
 import { fromError } from "zod-validation-error";
 import { z } from "zod";
 //import csurf from "csurf";
@@ -37,7 +37,7 @@ const errorHandler = (
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction,
+    /*next: NextFunction,*/
 ) => {
     console.error(err);
     res.status(500).json({
@@ -69,7 +69,7 @@ async function startServer() {
     try {
         await startDatabase();
 
-        await import("./routes/users.js");
+        await import("./routes/users/index");
         app.listen(port, "0.0.0.0", () => {
             console.log(`Server is running on http://localhost:${port}`);
         });

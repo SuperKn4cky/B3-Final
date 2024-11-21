@@ -1,7 +1,7 @@
 {
     "name": "node",
     "packageManager": "yarn@4.5.0",
-    "type": "module",
+    "type": "commonjs",
     "devDependencies": {
         "@tsconfig/node20": "^20.1.4",
         "@types/csurf": "^1",
