@@ -150,5 +150,3 @@ Comparée à des outils comme **Teams** ou **Pronote**, 89 Progress propose :
 ### Contributeurs
 
 - **SuperKnacky** ([@SuperKn4cky](https://github.com/SuperKn4cky)).
-
-```
