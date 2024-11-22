@@ -1,10 +1,7 @@
 import { db, app } from "../../index";
 import { eq } from "drizzle-orm";
 import xss from "xss";
-import {
-    users,
-    insertUserSchema,
-} from "../../db/schema/users";
+import { users, insertUserSchema } from "../../db/schema/users";
 
 app.put("/users/:id", async (req, res) => {
     try {
@@ -19,7 +16,9 @@ app.put("/users/:id", async (req, res) => {
             name: req.body.name,
             password: req.body.password,
             email: req.body.email,
-            description: req.body.description ? xss(req.body.description) : null,
+            description: req.body.description
+                ? xss(req.body.description)
+                : null,
             role: req.body.role,
         };
 

@@ -1,9 +1,6 @@
 import { db, app } from "../../index";
 import xss from "xss";
-import {
-    users,
-    insertUserSchema,
-} from "../../db/schema/users";
+import { users, insertUserSchema } from "../../db/schema/users";
 
 app.post(
     "/users",
@@ -13,7 +10,9 @@ app.post(
                 name: req.body.name,
                 password: req.body.password,
                 email: req.body.email,
-                description: req.body.description ? xss(req.body.description) : null,
+                description: req.body.description
+                    ? xss(req.body.description)
+                    : null,
                 role: req.body.role,
             };
             const validatedInsert = insertUserSchema.parse(sanitizedBody);

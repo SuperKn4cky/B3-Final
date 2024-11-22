@@ -1,9 +1,6 @@
 import { db, app } from "../../index";
 import { sql } from "drizzle-orm";
-import {
-    users,
-    selectUserSchema,
-} from "../../db/schema/users";
+import { users, selectUserSchema } from "../../db/schema/users";
 //import csurf from "csurf";
 
 //const csrfProtection = csurf({ cookie: true });
@@ -37,10 +34,10 @@ app.get("/users/:id", async (req, res) => {
                 user: `id: ${id}`,
             });
         } else {
-            const validatedUsers = User.map((user) => {
+            const validatedUser = User.map((user) => {
                 return selectUserSchema.parse(user);
             });
-            res.status(200).json(validatedUsers);
+            res.status(200).json(validatedUser);
         }
     } catch (error) {
         console.error("Error retrieving user:", error);
