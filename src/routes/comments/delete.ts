@@ -2,7 +2,7 @@ import { db, app } from "../../index";
 import { eq } from "drizzle-orm";
 import { comments } from "../../db/schema/comments";
 
-app.delete("/users/:id", async (req, res) => {
+app.delete("/comments/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const numericId = parseInt(id, 10);
