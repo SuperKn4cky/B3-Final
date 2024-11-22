@@ -1,5 +1,5 @@
 import { db, app } from "../../index";
-import { sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import xss from "xss";
 import {
     users,
@@ -9,6 +9,11 @@ import {
 app.put("/users/:id", async (req, res) => {
     try {
         const { id } = req.params;
+
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            res.status(400).json({ message: "Invalid user ID." });
+        }
 
         const sanitizedBody = {
             name: req.body.name,
@@ -23,7 +28,7 @@ app.put("/users/:id", async (req, res) => {
         const [result] = await db
             .update(users)
             .set(validatedUpdate)
-            .where(sql`${users.id} = ${id}`)
+            .where(eq(users.id, numericId))
             .execute();
 
         if (result.affectedRows === 0) {
