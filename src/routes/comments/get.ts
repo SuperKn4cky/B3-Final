@@ -1,5 +1,5 @@
 import { db, app } from "../../index";
-import { sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { comments, selectCommentSchema } from "../../db/schema/comments";
 //import csurf from "csurf";
 
@@ -24,20 +24,25 @@ app.get("/comments", async (req, res) => {
 app.get("/comments/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const Comment = await db
-            .select()
-            .from(comments)
-            .where(sql`${comments.id} = ${id}`);
-        if (Comment.length === 0) {
-            res.status(404).json({
-                message: "Comment not found.",
-                comment: `id: ${id}`,
-            });
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            res.status(400).json({ message: "Invalid comment ID." });
         } else {
-            const validatedComment = Comment.map((comment) => {
-                return selectCommentSchema.parse(comment);
-            });
-            res.status(200).json(validatedComment);
+            const Comment = await db
+                .select()
+                .from(comments)
+                .where(eq(comments.id, numericId));
+            if (Comment.length === 0) {
+                res.status(404).json({
+                    message: "Comment not found.",
+                    comment: `id: ${id}`,
+                });
+            } else {
+                const validatedComment = Comment.map((comment) => {
+                    return selectCommentSchema.parse(comment);
+                });
+                res.status(200).json(validatedComment);
+            }
         }
     } catch (error) {
         console.error("Error retrieving user:", error);
